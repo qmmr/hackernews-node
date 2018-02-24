@@ -9,6 +9,7 @@ type Link implements Node {
   id: ID!
   description: String!
   url: String!
+  postedBy(where: UserWhereInput): User!
 }
 
 type User implements Node {
@@ -16,6 +17,7 @@ type User implements Node {
   name: String!
   email: String!
   password: String!
+  links(where: LinkWhereInput, orderBy: LinkOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Link!]
 }
 
 
@@ -42,6 +44,17 @@ type LinkConnection {
 }
 
 input LinkCreateInput {
+  description: String!
+  url: String!
+  postedBy: UserCreateOneWithoutLinksInput!
+}
+
+input LinkCreateManyWithoutPostedByInput {
+  create: [LinkCreateWithoutPostedByInput!]
+  connect: [LinkWhereUniqueInput!]
+}
+
+input LinkCreateWithoutPostedByInput {
   description: String!
   url: String!
 }
@@ -90,6 +103,32 @@ input LinkSubscriptionWhereInput {
 input LinkUpdateInput {
   description: String
   url: String
+  postedBy: UserUpdateOneWithoutLinksInput
+}
+
+input LinkUpdateManyWithoutPostedByInput {
+  create: [LinkCreateWithoutPostedByInput!]
+  connect: [LinkWhereUniqueInput!]
+  disconnect: [LinkWhereUniqueInput!]
+  delete: [LinkWhereUniqueInput!]
+  update: [LinkUpdateWithoutPostedByInput!]
+  upsert: [LinkUpsertWithoutPostedByInput!]
+}
+
+input LinkUpdateWithoutPostedByDataInput {
+  description: String
+  url: String
+}
+
+input LinkUpdateWithoutPostedByInput {
+  where: LinkWhereUniqueInput!
+  data: LinkUpdateWithoutPostedByDataInput!
+}
+
+input LinkUpsertWithoutPostedByInput {
+  where: LinkWhereUniqueInput!
+  update: LinkUpdateWithoutPostedByDataInput!
+  create: LinkCreateWithoutPostedByInput!
 }
 
 input LinkWhereInput {
@@ -137,6 +176,7 @@ input LinkWhereInput {
   url_not_starts_with: String
   url_ends_with: String
   url_not_ends_with: String
+  postedBy: UserWhereInput
 }
 
 input LinkWhereUniqueInput {
@@ -202,6 +242,18 @@ input UserCreateInput {
   name: String!
   email: String!
   password: String!
+  links: LinkCreateManyWithoutPostedByInput
+}
+
+input UserCreateOneWithoutLinksInput {
+  create: UserCreateWithoutLinksInput
+  connect: UserWhereUniqueInput
+}
+
+input UserCreateWithoutLinksInput {
+  name: String!
+  email: String!
+  password: String!
 }
 
 type UserEdge {
@@ -252,6 +304,33 @@ input UserUpdateInput {
   name: String
   email: String
   password: String
+  links: LinkUpdateManyWithoutPostedByInput
+}
+
+input UserUpdateOneWithoutLinksInput {
+  create: UserCreateWithoutLinksInput
+  connect: UserWhereUniqueInput
+  disconnect: UserWhereUniqueInput
+  delete: UserWhereUniqueInput
+  update: UserUpdateWithoutLinksInput
+  upsert: UserUpsertWithoutLinksInput
+}
+
+input UserUpdateWithoutLinksDataInput {
+  name: String
+  email: String
+  password: String
+}
+
+input UserUpdateWithoutLinksInput {
+  where: UserWhereUniqueInput!
+  data: UserUpdateWithoutLinksDataInput!
+}
+
+input UserUpsertWithoutLinksInput {
+  where: UserWhereUniqueInput!
+  update: UserUpdateWithoutLinksDataInput!
+  create: UserCreateWithoutLinksInput!
 }
 
 input UserWhereInput {
@@ -313,6 +392,9 @@ input UserWhereInput {
   password_not_starts_with: String
   password_ends_with: String
   password_not_ends_with: String
+  links_every: LinkWhereInput
+  links_some: LinkWhereInput
+  links_none: LinkWhereInput
 }
 
 input UserWhereUniqueInput {
