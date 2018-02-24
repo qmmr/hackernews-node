@@ -4,6 +4,13 @@ type AuthPayload {
   user: User
 }
 
+# redefine User type as we do not want password field to be exposed
+type User {
+  id: ID!
+  name: String!
+  email: String!
+}
+
 type Query {
   feed(filter: String, skip: Int, first: Int): [Link!]!
 }
