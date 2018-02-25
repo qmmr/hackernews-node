@@ -1,11 +1,18 @@
 const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
-const APP_SECRET = require('../utils')
+const { APP_SECRET, getUserId } = require('../utils')
 
-const post = function(parent, args, context, info) {
-	const { url, description } = args
+const post = function(parent, { url, description }, context, info) {
+	const userId = getUserId(context)
+	const data = {
+		url,
+		description,
+		postedBy: {
+			connect: { id: userId }
+		}
+	}
 
-	return context.db.mutation.createLink({ data: { url, description } }, info)
+	return context.db.mutation.createLink({ data }, info)
 }
 
 // eslint-disable-next-line
@@ -19,6 +26,7 @@ const signup = async function signup(parent, args, context, info) {
 	return { token, user }
 }
 
+// eslint-disable-next-line
 const login = async function login(parent, args, context, info) {
 	const user = await context.db.query.user({ where: { email: args.email } })
 	if (!user) {
